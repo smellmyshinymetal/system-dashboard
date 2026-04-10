@@ -3,52 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        .status {
-            margin-top: 2rem;
-            padding: 1rem 2rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-        }
-    </style>
+    <title>Jarvis System Command Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>🤖 System Dashboard</h1>
-        <p>Personal system stats dashboard</p>
-        <div class="status">
-            <p>✅ GitHub Pages is live!</p>
-            <p>Repository: <a href="https://github.com/smellmyshinymetal/system-dashboard" style="color: #fff; text-decoration: underline;">smellmyshinymetal/system-dashboard</a></p>
-        </div>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">🤖</span>
+                    <span class="logo-text">JARVIS<span class="logo-accent">.SYS</span></span>
+                </div>
+                <div class="status-indicator online">
+                    <span class="status-dot"></span>
+                    <span class="status-text">ONLINE</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <h1 class="system-title">COMMAND CENTER</h1>
+            </div>
+            <div class="header-right">
+                <div class="clock-widget">
+                    <div id="digital-clock" class="digital-clock">00:00:00</div>
+                    <div id="date-display" class="date-display">LOADING...</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Grid -->
+        <main class="main-grid">
+            <!-- System Resources Panel -->
+            <section class="panel system-resources">
+                <div class="panel-header">
+                    <span class="panel-icon">⚙️</span>
+                    <h2>System Resources</h2>
+                </div>
+                <div class="panel-content">
+                    <!-- CPU -->
+                    <div class="resource-card">
+                        <div class="resource-header">
+                            <span class="resource-label">CPU Usage</span>
+                            <span id="cpu-value" class="resource-value">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="cpu-bar" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="resource-details">
+                            <span id="cpu-cores">Cores: --</span>
+                            <span id="cpu-model">--</span>
+                        </div>
+                    </div>
+
+                    <!-- RAM -->
+                    <div class="resource-card">
+                        <div class="resource-header">
+                            <span class="resource-label">Memory Usage</span>
+                            <span id="ram-value" class="resource-value">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="ram-bar" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="resource-details">
+                            <span id="ram-used">Used: --</span>
+                            <span id="ram-total">Total: --</span>
+                        </div>
+                    </div>
+
+                    <!-- Disk -->
+                    <div class="resource-card">
+                        <div class="resource-header">
+                            <span class="resource-label">Disk Usage</span>
+                            <span id="disk-value" class="resource-value">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="disk-bar" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="resource-details">
+                            <span id="disk-free">Free: --</span>
+                            <span id="disk-total">Total: --</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usage Charts Panel -->
+            <section class="panel usage-charts">
+                <div class="panel-header">
+                    <span class="panel-icon">📊</span>
+                    <h2>Real-Time Metrics</h2>
+                </div>
+                <div class="panel-content chart-container">
+                    <canvas id="usageChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Agent Status Panel -->
+            <section class="panel agent-status">
+                <div class="panel-header">
+                    <span class="panel-icon">🤖</span>
+                    <h2>OpenClaw Agents</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="agent-summary">
+                        <div class="agent-stat">
+                            <span class="stat-number" id="active-agents">0</span>
+                            <span class="stat-label">Active</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="stat-number" id="total-agents">0</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="stat-number" id="uptime-hours">0h</span>
+                            <span class="stat-label">Uptime</span>
+                        </div>
+                    </div>
+                    <div class="agent-list" id="agent-list">
+                        <!-- Agent items populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Model Info Panel -->
+            <section class="panel ai-model">
+                <div class="panel-header">
+                    <span class="panel-icon">🧠</span>
+                    <h2>AI Model Status</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="model-card primary">
+                        <div class="model-header">
+                            <span class="model-name" id="current-model">kimi-k2.5</span>
+                            <span class="model-badge active">ACTIVE</span>
+                        </div>
+                        <div class="model-stats">
+                            <div class="model-stat">
+                                <span class="stat-label">Tokens Used</span>
+                                <span class="stat-value" id="tokens-used">--</span>
+                            </div>
+                            <div class="model-stat">
+                                <span class="stat-label">Context Window</span>
+                                <span class="stat-value">128K</span>
+                            </div>
+                            <div class="model-stat">
+                                <span class="stat-label">Response Time</span>
+                                <span class="stat-value" id="response-time">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="doughnut-chart-container">
+                        <canvas id="tokenChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Info Panel -->
+            <section class="panel system-info">
+                <div class="panel-header">
+                    <span class="panel-icon">🖥️</span>
+                    <h2>System Info</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">OS</span>
+                            <span class="info-value" id="os-info">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Architecture</span>
+                            <span class="info-value" id="arch-info">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Node.js</span>
+                            <span class="info-value" id="node-info">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Shell</span>
+                            <span class="info-value" id="shell-info">--</span>
+                        </div>
+                        <div class="info-item wide">
+                            <span class="info-label">Hostname</span>
+                            <span class="info-value" id="hostname-info">--</span>
+                        </div>
+                        <div class="info-item wide">
+                            <span class="info-label">Session Runtime</span>
+                            <span class="info-value" id="session-uptime">--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Network Status Panel -->
+            <section class="panel network-status">
+                <div class="panel-header">
+                    <span class="panel-icon">🌐</span>
+                    <h2>Network Status</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="network-indicator">
+                        <div id="network-status-dot" class="network-dot"></div>
+                        <span id="network-status-text">Checking...</span>
+                    </div>
+                    <div class="network-stats">
+                        <div class="net-stat">
+                            <span class="net-label">Latency</span>
+                            <span class="net-value" id="latency">-- ms</span>
+                        </div>
+                        <div class="net-stat">
+                            <span class="net-label">Connection</span>
+                            <span class="net-value" id="connection-type">--</span>
+                        </div>
+                    </div>
+                    <div class="mini-chart-container">
+                        <canvas id="networkChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-left">
+                <span class="footer-text">Jarvis System Dashboard v1.0</span>
+            </div>
+            <div class="footer-center">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span id="terminal-text" class="terminal-text"></span>
+                    <span class="terminal-cursor">_</span>
+                </div>
+            </div>
+            <div class="footer-right">
+                <span class="footer-text" id="footer-uptime">System Uptime: --</span>
+            </div>
+        </footer>
     </div>
+
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
